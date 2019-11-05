@@ -6,10 +6,16 @@ check_network() {
 	   exit 5
 	fi
 	}
+create_repo() {
+	if [[ ${os_version} == 7 ]];then
+		rpm -ivh http://down.op.antuzhi.com/apps/el7/epel-release-latest-7.noarch.rpm >/dev/null
+	else
+		rpm -ivh http://down.op.antuzhi.com/apps/el6/epel-release-latest-6.noarch.rpm >/dev/null
+	fi
+	}
 install_rpms() {
 	echo -e  "\033[42m#######Setting base rpm tools######## \033[0m"
 	yum -q install lrzsz vim wget zip unzip bash-completion sysstat htop lsof -y
-#	yum groupinstall "Development tools" "Additional Development" -y
 	}
 set_date() {
 	echo -e  "\033[42m#######Setting date######## \033[0m"
@@ -118,18 +124,14 @@ install_cloudmonitor() {
 
 install_superv() {
 	echo -e  "\033[42m#######Install Supservisor######## \033[0m"
+	yum -q install supervisor -y
 	if [[ ${os_version} == 7 ]];then
-		rpm -ivh http://down.op.antuzhi.com/apps/el7/epel-release-latest-7.noarch.rpm >/dev/null
-		yum -q install supervisor -y
 		systemctl start supervisord.service
 		systemctl enable supervisord.service
 	else
-		rpm -ivh http://down.op.antuzhi.com/apps/el6/epel-release-latest-6.noarch.rpm >/dev/null
-		yum -q install supervisor -y
 		/etc/init.d/supervisord start
 		chkconfig supervisord on
-	fi
-		
+	fi		
 }	
 
 install_za() { 
@@ -160,31 +162,29 @@ install_za() {
 				
 install_nginx() { 
 	echo -e  "\033[42m#######Install Nginx######## \033[0m"
-    if [[ $os_version != 7 ]];then
-		rpm -ivh http://down.op.antuzhi.com/apps/el6/epel-release-latest-6.noarch.rpm
-    fi
 	yum -q install gcc pcre pcre-devel zlib zlib-devel openssl openssl-devel perl-ExtUtils-Embed GeoIP GeoIP-devel deltarpm -y
 	if [ ! -d ${base_dir}/nginx -a ! -d ${base_dir}/nginx-1.14.1 ];then
 		wget -q http://down.op.antuzhi.com/apps/nginx-1.14.1.tar.gz -O /tmp/nginx-1.14.1.tar.gz
 		wget -q http://down.op.antuzhi.com/apps/nginx-cofigs.tar.gz -O /tmp/nginx-cofigs.tar.gz
 		cd /tmp && tar -xf nginx-1.14.1.tar.gz && cd nginx-1.14.1
 		./configure --prefix=/data/program/nginx-1.14.1 --with-http_ssl_module --with-http_stub_status_module --with-pcre --with-threads --with-http_geoip_module --with-http_gzip_static_module --with-http_auth_request_module --with-http_perl_module --with-stream --with-stream_ssl_module --with-stream_geoip_module --with-debug &>/dev/null && make && make install && cd ${base_dir} && ln -sf nginx-1.14.1 nginx
-        if [[ ${os_version} == 7 ]];then
-            wget -q http://down.op.antuzhi.com/apps/el7/nginx.service -O /usr/lib/systemd/system/nginx.service
-            systemctl enable nginx.service
+        	if [[ ${os_version} == 7 ]];then
+            		wget -q http://down.op.antuzhi.com/apps/el7/nginx.service -O /usr/lib/systemd/system/nginx.service
+            		systemctl enable nginx.service
         	else
-            wget -q http://down.op.antuzhi.com/apps/el6/nginx -O /etc/init.d/nginx
-		    chmod +x /etc/init.d/nginx
-            chkconfig nginx on
+            		wget -q http://down.op.antuzhi.com/apps/el6/nginx -O /etc/init.d/nginx
+		    	chmod +x /etc/init.d/nginx
+            		chkconfig nginx on
 		fi
 	fi
 	cd /tmp && tar -xf nginx-cofigs.tar.gz -C ${base_dir}/
-    if [[ $os_version == 7 ]];then
-			systemctl daemon-reload
+    	if [[ $os_version == 7 ]];then
+	    systemctl daemon-reload
             systemctl restart nginx.service
-    else
+   	 else
+	    chkconfig nginx on
             service nginx restart
-    fi
+   	 fi
 }
 
 install_php() {
@@ -205,13 +205,13 @@ install_php() {
 		cd /tmp && tar -xf redis-5.0.0.tgz && cd redis-5.0.0
 		/data/program/php-7.2.12/bin/phpize && ./configure --with-php-config=/data/program/php-7.2.12/bin/php-config && make && make install
 		if [[ ${os_version} == 7 ]];then
-            wget -q http://down.op.antuzhi.com/apps/el7/php-fpm.service -O /usr/lib/systemd/system/php-fpm.service
+            		wget -q http://down.op.antuzhi.com/apps/el7/php-fpm.service -O /usr/lib/systemd/system/php-fpm.service
 			systemctl daemon-reload
-            systemctl enable php-fpm.service
+            		systemctl enable php-fpm.service
         	else
-            wget -q http://down.op.antuzhi.com/apps/el6/php-fpm -O /etc/init.d/php-fpm
+            	    wget -q http://down.op.antuzhi.com/apps/el6/php-fpm -O /etc/init.d/php-fpm
 		    chmod +x /etc/init.d/php-fpm
-            chkconfig php-fpm on
+                    chkconfig php-fpm on
 		fi
 	cd /tmp && tar -xf php-cofigs.tar.gz -C ${base_dir}/	 
 	fi
@@ -240,6 +240,7 @@ main() {
 	base_dir=/data/program
         check_network	
         install_rpms
+	create_repo
 	#set_date
 	#set_selinux
 	#set_sshd
