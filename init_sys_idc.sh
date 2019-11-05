@@ -190,11 +190,16 @@ install_nginx() {
 install_php() {
 	echo -e  "\033[42m#######Install PHP######## \033[0m"
 	if [ ! -d ${base_dir}/php -a ! -d ${base_dir}/php-7.2.12 ];then
-		yum -q install libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel mysql pcre-devel bzip2 bzip2-devel libcurl libcurl-devel readline readline-devel -y
+		yum -q install gcc gcc-c++ openssl openssl-devel libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel mysql pcre-devel bzip2 bzip2-devel libcurl libcurl-devel readline readline-devel -y
 		wget -q http://down.op.antuzhi.com/apps/php-7.2.12.tar.gz -O /tmp/php-7.2.12.tar.gz
 		wget -q http://down.op.antuzhi.com/apps/php-cofigs.tar.gz -O /tmp/php-cofigs.tar.gz
 		cd /tmp && tar -xf php-7.2.12.tar.gz && cd php-7.2.12
-		./configure '--prefix=/data/program/php-7.2.12' '--with-config-file-path=/data/program/php-7.2.12/etc' '--enable-inline-optimization' '--disable-debug' '--disable-rpath' '--enable-shared' '--enable-opcache' '--enable-fpm' '--with-fpm-user=baice' '--with-fpm-group=baice' '--enable-mysqlnd' '--with-mysqli=mysqlnd' '--with-pdo-mysql=mysqlnd' '--with-gettext' '--enable-mbstring' '--with-iconv' '--with-mhash' '--with-openssl' '--enable-bcmath' '--enable-soap' '--with-libxml-dir' '--enable-pcntl' '--enable-shmop' '--enable-sysvmsg' '--enable-sysvsem' '--enable-sysvshm' '--enable-sockets' '--with-zlib' '--enable-zip' '--with-bz2' '--with-readline' '--with-gd' && make ZEND_EXTRA_LIBS='-liconv' && make install
+		./configure '--prefix=/data/program/php-7.2.12' '--with-config-file-path=/data/program/php-7.2.12/etc' '--enable-inline-optimization' '--disable-debug' '--disable-rpath' '--enable-shared' '--enable-opcache' '--enable-fpm' '--with-fpm-user=baice' '--with-fpm-group=baice' '--enable-mysqlnd' '--with-mysqli=mysqlnd' '--with-pdo-mysql=mysqlnd' '--with-gettext' '--enable-mbstring' '--with-iconv' '--with-mhash' '--with-openssl' '--enable-bcmath' '--enable-soap' '--with-libxml-dir' '--enable-pcntl' '--enable-shmop' '--enable-sysvmsg' '--enable-sysvsem' '--enable-sysvshm' '--enable-sockets' '--with-zlib' '--enable-zip' '--with-bz2' '--with-readline' '--with-gd' 
+		if [[ $os_version != 7 ]];then
+			make && make install
+		else
+			make ZEND_EXTRA_LIBS='-liconv' && make install
+		fi
 		cd /data/program && ln -sf php-7.2.12 php
 		wget -q http://down.op.antuzhi.com/apps/redis-5.0.0.tgz -O /tmp/redis-5.0.0.tgz
 		cd /tmp && tar -xf redis-5.0.0.tgz && cd redis-5.0.0
@@ -208,8 +213,8 @@ install_php() {
 		    chmod +x /etc/init.d/php-fpm
             chkconfig php-fpm on
 		fi
-	fi
 	cd /tmp && tar -xf php-cofigs.tar.gz -C ${base_dir}/	 
+	fi
 }
 
 install_jdk() {
@@ -234,7 +239,7 @@ main() {
 	[ ! -d /data/program ] && mkdir -p /data/program
 	base_dir=/data/program
         check_network	
-	#install_rpms
+        install_rpms
 	#set_date
 	#set_selinux
 	#set_sshd
