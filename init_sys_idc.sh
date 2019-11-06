@@ -162,8 +162,8 @@ install_za() {
 				
 install_nginx() { 
 	echo -e  "\033[42m#######Install Nginx######## \033[0m"
-	yum -q install gcc pcre pcre-devel zlib zlib-devel openssl openssl-devel perl-ExtUtils-Embed GeoIP GeoIP-devel deltarpm -y
 	if [ ! -d ${base_dir}/nginx -a ! -d ${base_dir}/nginx-1.14.1 ];then
+		yum -q install gcc pcre pcre-devel zlib zlib-devel openssl openssl-devel perl-ExtUtils-Embed GeoIP GeoIP-devel deltarpm -y
 		wget -q http://down.op.antuzhi.com/apps/nginx-1.14.1.tar.gz -O /tmp/nginx-1.14.1.tar.gz
 		wget -q http://down.op.antuzhi.com/apps/nginx-cofigs.tar.gz -O /tmp/nginx-cofigs.tar.gz
 		cd /tmp && tar -xf nginx-1.14.1.tar.gz && cd nginx-1.14.1
@@ -194,7 +194,7 @@ install_php() {
 		wget -q http://down.op.antuzhi.com/apps/php-7.2.12.tar.gz -O /tmp/php-7.2.12.tar.gz
 		wget -q http://down.op.antuzhi.com/apps/php-cofigs.tar.gz -O /tmp/php-cofigs.tar.gz
 		cd /tmp && tar -xf php-7.2.12.tar.gz && cd php-7.2.12
-		./configure '--prefix=/data/program/php-7.2.12' '--with-config-file-path=/data/program/php-7.2.12/etc' '--enable-inline-optimization' '--disable-debug' '--disable-rpath' '--enable-shared' '--enable-opcache' '--enable-fpm' '--with-fpm-user=baice' '--with-fpm-group=baice' '--enable-mysqlnd' '--with-mysqli=mysqlnd' '--with-pdo-mysql=mysqlnd' '--with-gettext' '--enable-mbstring' '--with-iconv' '--with-mhash' '--with-openssl' '--enable-bcmath' '--enable-soap' '--with-libxml-dir' '--enable-pcntl' '--enable-shmop' '--enable-sysvmsg' '--enable-sysvsem' '--enable-sysvshm' '--enable-sockets' '--with-zlib' '--enable-zip' '--with-bz2' '--with-readline' '--with-gd' 
+		./configure '--prefix=/data/program/php-7.2.12' '--with-config-file-path=/data/program/php-7.2.12/etc' '--enable-inline-optimization' '--disable-debug' '--disable-rpath' '--enable-shared' '--enable-opcache' '--enable-fpm' '--with-fpm-user=baice' '--with-fpm-group=baice' '--enable-mysqlnd' '--with-mysqli=mysqlnd' '--with-pdo-mysql=mysqlnd' '--with-gettext' '--enable-mbstring' '--with-iconv' '--with-mhash' '--with-openssl' '--enable-bcmath' '--enable-soap' '--with-libxml-dir' '--enable-pcntl' '--enable-shmop' '--enable-sysvmsg' '--enable-sysvsem' '--enable-sysvshm' '--enable-sockets' '--with-zlib' '--enable-zip' '--with-bz2' '--with-readline' '--with-gd' &>/dev/null 
 		if [[ $os_version != 7 ]];then
 			make && make install
 		else
