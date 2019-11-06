@@ -238,16 +238,16 @@ main() {
 	internal_ip=`ip addr | awk '/inet\>/{print $2}' | awk -F'/' 'NR==2{print $1}'`
 	[ ! -d /data/program ] && mkdir -p /data/program
 	base_dir=/data/program
-        check_network	
-        install_rpms
+        check_network
 	create_repo
-	#set_date
-	#set_selinux
-	#set_sshd
-	#set_firewall
-	#set_basesys
+        install_rpms
+	set_date
+	set_selinux
+	set_sshd
+	set_firewall
+	set_basesys
 	#set_hostname
-	#install_cloudmonitor
+	install_cloudmonitor
 	#install_superv
 	#install_za
 	#install_nginx
