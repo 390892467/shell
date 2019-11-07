@@ -195,10 +195,11 @@ install_php() {
 		wget -q http://down.op.antuzhi.com/apps/php-cofigs.tar.gz -O /tmp/php-cofigs.tar.gz
 		cd /tmp && tar -xf php-7.2.12.tar.gz && cd php-7.2.12
 		./configure '--prefix=/data/program/php-7.2.12' '--with-config-file-path=/data/program/php-7.2.12/etc' '--enable-inline-optimization' '--disable-debug' '--disable-rpath' '--enable-shared' '--enable-opcache' '--enable-fpm' '--with-fpm-user=baice' '--with-fpm-group=baice' '--enable-mysqlnd' '--with-mysqli=mysqlnd' '--with-pdo-mysql=mysqlnd' '--with-gettext' '--enable-mbstring' '--with-iconv' '--with-mhash' '--with-openssl' '--enable-bcmath' '--enable-soap' '--with-libxml-dir' '--enable-pcntl' '--enable-shmop' '--enable-sysvmsg' '--enable-sysvsem' '--enable-sysvshm' '--enable-sockets' '--with-zlib' '--enable-zip' '--with-bz2' '--with-readline' '--with-gd' &>/dev/null 
-		if [[ $os_version != 7 ]];then
+		if [[ $? -eq 0  ]];then
 			make && make install
+			#make ZEND_EXTRA_LIBS='-liconv' && make install
 		else
-			make ZEND_EXTRA_LIBS='-liconv' && make install
+			echo -e "\033[41m#######Make PHP FAILD######## \033[0m"
 		fi
 		cd /data/program && ln -sf php-7.2.12 php
 		wget -q http://down.op.antuzhi.com/apps/redis-5.0.0.tgz -O /tmp/redis-5.0.0.tgz
