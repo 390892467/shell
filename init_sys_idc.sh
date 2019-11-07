@@ -17,6 +17,14 @@ install_rpms() {
 	echo -e  "\033[42m#######Setting base rpm tools######## \033[0m"
 	yum -q install lrzsz vim wget zip unzip bash-completion sysstat htop lsof -y
 	}
+add_muser() {
+	echo -e  "\033[42m#######Add user jumpserver######## \033[0m"
+	if ! `id jumpserver` &>/dev/null;then
+		useradd jumpserver
+		echo `jumpserver@2018` | passwd --stdin jumpserver
+		sed -i '/^root/a jumpserver  All=(ALL)  NOPASSWD: ALL' /etc/sudoers
+	fi
+}
 set_date() {
 	echo -e  "\033[42m#######Setting date######## \033[0m"
 	yum -q install ntp -y
@@ -242,6 +250,7 @@ main() {
         check_network
 	create_repo
         install_rpms
+	add_muser
 	set_date
 	set_selinux
 	set_sshd
