@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-check_network() {
+check_network() { 
 	if ! `ping -c 3 down.op.antuzhi.com &>/dev/null`;then
 	   echo -e  "\033[41m####### Please check the network and try again! ######## \033[0m"
 	   exit 5
 	fi
-	}
+	}	
 create_repo() {
 	if [[ ${os_version} == 7 ]];then
 		rpm -ivh http://down.op.antuzhi.com/apps/el7/epel-release-latest-7.noarch.rpm >/dev/null
@@ -19,7 +19,7 @@ install_rpms() {
 	}
 add_muser() {
 	echo -e  "\033[42m#######Add user jumpserver######## \033[0m"
-	if ! `id jumpserver` &>/dev/null;then
+	if ! `id jumpserver &>/dev/null`;then
 		useradd jumpserver
 		echo 'jumpserver@2018' | passwd --stdin jumpserver
 		sed -i '/^root/a jumpserver  ALL=(ALL)  NOPASSWD: ALL' /etc/sudoers
