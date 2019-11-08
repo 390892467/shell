@@ -21,7 +21,7 @@ add_muser() {
 	echo -e  "\033[42m#######Add user jumpserver######## \033[0m"
 	if ! `id jumpserver` &>/dev/null;then
 		useradd jumpserver
-		echo `jumpserver@2018` | passwd --stdin jumpserver
+		echo 'jumpserver@2018' | passwd --stdin jumpserver
 		sed -i '/^root/a jumpserver  All=(ALL)  NOPASSWD: ALL' /etc/sudoers
 	fi
 }
