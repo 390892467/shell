@@ -22,7 +22,7 @@ add_muser() {
 	if ! `id jumpserver` &>/dev/null;then
 		useradd jumpserver
 		echo 'jumpserver@2018' | passwd --stdin jumpserver
-		sed -i '/^root/a jumpserver  All=(ALL)  NOPASSWD: ALL' /etc/sudoers
+		sed -i '/^root/a jumpserver  ALL=(ALL)  NOPASSWD: ALL' /etc/sudoers
 	fi
 }
 set_date() {
